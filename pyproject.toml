@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "rinhaapi"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = "^2.3.2"
+numpy = "^1.24.3"
+requests = "^2.31.0"
+selenium = "^4.10.0"
+webdriver-manager = "^3.8.6"
+
+[tool.poetry.scripts]
+match_parser = "rinhaapi.match_parser:debug"
+performances = "rinhaapi.performances:debug"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
