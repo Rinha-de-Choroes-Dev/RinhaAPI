@@ -1,0 +1,122 @@
+body {
+  background-color: #18004D;
+  background-image: url('./assets/subtract.svg');
+}
+
+.column {
+  margin: 50px 50px;
+  align-items: stretch;
+}
+
+.card_img{
+  transition: transform .2s;
+  align-items: stretch;
+}
+
+.card_img:hover {
+  transform: scale(2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.box-container {
+  text-align: center;
+  margin: 50px auto;
+  width: 90%;
+  /* height: 1000px; */
+  display: flex;
+  align-items: stretch;
+  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
+  background: #EBFE40;
+  display: grid;
+  grid-auto-flow: row;
+}
+
+.box-container-team {
+  text-align: center;
+  margin: 25px auto;
+  width: 95%;
+  display: flex;
+  align-items: stretch;
+  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
+  background: #18004D;
+  
+}
+
+.box-container-header {
+  text-align: center;
+  align-items: center;
+  margin: 50px auto;
+  width: 90%;
+  height: 100px;
+  display: flex;
+  align-items: stretch;
+  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
+  background: #EBFE40;
+  
+}
+
+#root {
+  /* max-width: 1500px; */
+  width: 90%;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
+}
+
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+h1 {
+  margin: 0px auto;
+  font-family: 'Oswald';
+  font-style: bold;
+  font-weight: 1200;
+  font-size: 23.5065px;
+  line-height: 140%;
+  color: black;
+
+  /* or 33px */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: -40px auto;
+  font-family: 'Oswald';
+  font-style: bold;
+  font-weight: 1200;
+  font-size: 30.5065px;
+  padding-top: 0px;
+  padding-bottom: 60px;
+  color: white;
+
+  /* or 33px
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: -0.04em;
+  text-transform: uppercase; */
+}
