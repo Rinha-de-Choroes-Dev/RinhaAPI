@@ -92,11 +92,18 @@ def get_team_stats(team_id):
     res = cur.execute("SELECT * FROM players WHERE team == " + team_id)
     team = res.fetchall()
 
+    if len(team) == 0:
+        return []
+    
+
     max = get_max_stats()
     team_stats = []
 
     for player in team:
-        player_stats = get_player_stats(str(player[psteamid]), max).tolist()
+        player_stats = get_player_stats(str(player[psteamid]), max)
+        if(len(player_stats) == 0):
+            return []
+        player_stats = player_stats.tolist()
 
         player_dict = {
             'steamid': player[psteamid],

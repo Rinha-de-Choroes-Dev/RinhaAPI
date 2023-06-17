@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from .performances import *
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def hello_world():
@@ -33,8 +35,15 @@ def route_get_team_stats():
     
     if team.isnumeric():
         stats = get_team_stats(team)
-        print(stats)
-        response = jsonify(stats)
-        return response
+        if len(stats) > 0:
+            # print(stats)
+            response = jsonify(stats)
+            return response
+        
+        return "<p>Player from team not found</p>"
 
     return "<p>Team not found</p>"
+
+@app.route("/get_teams")
+def route_get_teams():
+    return jsonify(["Mamacos United", "Macaco Não Mata Macaco", "Teamanduá"])

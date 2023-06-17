@@ -14,6 +14,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+
+global DEBUGGING 
+DEBUGGING = True
+
 def get_wards(match_id):
 
 # match_id = "7091254432"
@@ -195,11 +199,38 @@ def insert_players():
     con.commit()
 
 
+def insert_matches():
+    matches = ["7063786889",
+                "7080828209",
+                "7085124719",
+                "7070262846", #fase de grupos (1 foi wo, por isso apenas 5 partidas)
+                "7104543983",
+                "7104584900",
+                "7104623704", # MU x Eminence
+                "7114897562",
+                "7114941107", # MU x Paranoid
+                "7060886235",
+                "7071648129",
+                "7091291913", # fase de grupos (3 foram wo, por isso apenas 3 partidas)
+                "7105935084",
+                "7105971366",
+                "7106012237", # MNMM x STD
+                "7062273638",
+                "7060921520",
+                "7068807049",
+                "7070231207",
+                "7074524478",
+                "7082330201", # fase de grupos
+            ]
+    for match in matches:
+        print(save_match(match, False))
+
+    return
+
 
 def debug():
     # print(parse_match("7091254432"))
-    global DEBUGGING 
-    DEBUGGING = True
+    
 
     print(save_match("7091254432", False))
     print(save_match("7063786889", False))
