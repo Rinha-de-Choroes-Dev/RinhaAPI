@@ -13,10 +13,11 @@ import {
   img_template_2
   } from './assets/cards/index.js'
 
-import img_player from './assets/cards/player_photos/undy.png';
 
 // let img_player = './assets/cards/player_photos/undy.png';
 
+// const api_url = 'https://vraposo.pythonanywhere.com/'
+const api_url = 'http://127.0.0.1:5000'
 
 // const player_images = import.meta.glob("./assets/cards/player_photos/*")
 
@@ -35,7 +36,7 @@ const team_count = 3;
 
 let team_stats = [];
 for (let i = 0; i < team_count; i++) {
-  let url = "http://127.0.0.1:5000/get_team_stats?team=" + i.toString();
+  let url = api_url + "get_team_stats?team=" + i.toString();
   await fetch(url).then(function(response) {
     return response.json();
   }).then(function(data) {

@@ -7,7 +7,7 @@ CORS(app)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "<p>Hello from RinnhaAPI!</p>"
 
 @app.route("/get_player_stats")
 def route_get_player_stats():
