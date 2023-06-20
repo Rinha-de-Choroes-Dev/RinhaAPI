@@ -11,7 +11,7 @@ Devido a limitações na organização do campeonato, apenas a fase de grupos es
 como esse projeto se trata de um protótipo, apenas os três primeiros colocados tiveram suas cartas geradas. O resultado encontra-se
 disponível em: https://vravaglia.github.io/RinhaAPI/
 
-Neste repositório está contido o código tanto do backend, desenvolvido em [Flask](https://flask.palletsprojects.com/en/2.3.x/) quanto o
+Neste repositório está contido o código tanto do backend, desenvolvido em [Flask](https://flask.palletsprojects.com/en/2.3.x/), quanto do
 frontend, desenvolvido com [React](https://react.dev/) e [Vite](https://vitejs.dev/).
 
 ### Fonte dos dados
