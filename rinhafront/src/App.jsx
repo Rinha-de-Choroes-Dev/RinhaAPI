@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import React from 'react';
+import {useState, useEffect} from 'react'
 
 import './App.css'
 import {
@@ -16,8 +15,14 @@ import {
 
 // let img_player = './assets/cards/player_photos/undy.png';
 
-// const api_url = 'https://vraposo.pythonanywhere.com/'
-const api_url = 'http://127.0.0.1:5000'
+let api_url = 'http://127.0.0.1:5000/'
+const remote_server = true
+
+
+if (remote_server){
+  api_url = 'https://vraposo.pythonanywhere.com/'
+}
+  
 
 // const player_images = import.meta.glob("./assets/cards/player_photos/*")
 
@@ -32,19 +37,6 @@ function get_player_img(img_name){
 
 
 const team_count = 3;
-
-
-let team_stats = [];
-for (let i = 0; i < team_count; i++) {
-  let url = api_url + "get_team_stats?team=" + i.toString();
-  await fetch(url).then(function(response) {
-    return response.json();
-  }).then(function(data) {
-    team_stats.push(data);
-  }).catch(function(err) {
-    console.log('Fetch Error :-S', err);
-  });
-}
 
 
 function idx2pos(idx){
@@ -97,7 +89,7 @@ function compute_average(stats){
 
 }
 
-function generate_player_cards(n_players, team, big_team){
+function generate_player_cards(n_players, team, big_team, team_stats){
 
   let pad = 0;
   let html = []
@@ -107,10 +99,12 @@ function generate_player_cards(n_players, team, big_team){
     pad = 5;
   }
   else{
-    n_players = 5;
-    
+    if (team_stats[team] !== undefined){
+      n_players = 5;
+    }
   }
   // self.all = np.array([self.supp, self.kda, self.farm, self.versat, self.fight, self.push])
+  console.log(n_players)
   for (let i = 0; i < n_players; i++) {
     html.push(
     <div className={"parent"}>
@@ -142,23 +136,28 @@ function generate_player_cards(n_players, team, big_team){
 
 
 
-function generate_rows(idx_team){
+function generate_rows(idx_team, team_stats){
   let html = []
 
-  const n_players = team_stats[idx_team].length;
+  let n_players = 0;
 
-  
+  if (team_stats[idx_team] !== undefined){
+    console.log(team_stats);
+    n_players = team_stats[idx_team].length;
+  }
+
+   
 
   html.push(
     <div className={"column"}>
-      {generate_player_cards(n_players, idx_team, false)}
+      {generate_player_cards(n_players, idx_team, false, team_stats)}
     </div>
   )
 
   if (n_players > 5){
     html.push(
       <div className={"column"}>
-        {generate_player_cards(n_players, idx_team, true)}
+        {generate_player_cards(n_players, idx_team, true, team_stats)}
       </div>
     )
   }
@@ -166,17 +165,18 @@ function generate_rows(idx_team){
   return html
 }
 
+const display_order = [1, 2, 0];
 
-const team_order = [1, 2, 0]
-function generate_teams(){
+function generate_teams(team_stats){
+  
   let html_string = [];
 
   for (let i = 0; i < team_count; i++) {
-    const j = team_order[i];
+    const j = display_order[i];
     html_string .push(
       <div className={'box-container-team'}>
         <h2>{team_names[j]}</h2>
-        {generate_rows(j)}     
+        {generate_rows(j, team_stats)}     
       </div>
     )
   }
@@ -184,9 +184,42 @@ function generate_teams(){
   return html_string
 }
 
-function App() {
-  const [count, setCount] = useState(0)
 
+function App() {
+
+
+  // const team_stats = get_team_stats();
+
+  const [isLoading, setLoading] = useState(true);
+  const [team_stats, set_team_stats] = useState();
+
+  useEffect(() => {
+
+    let promises = [];
+
+    for (let i = 0; i < team_count; i++) {
+      let url = api_url + "get_team_stats?team=" + i.toString();
+
+      promises.push(fetch(url).then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        return data;
+      }).catch(function(err) {
+        console.log('Fetch Error :-S', err);
+      }));
+
+      Promise.all(promises).then((data) => {
+        set_team_stats(data);
+        setLoading(false);
+      });
+
+    }
+    
+  },[]);
+
+  if (isLoading) {
+    return <h2>Carregando...</h2>;
+  }
 
   return (
     <>
@@ -194,7 +227,7 @@ function App() {
         <h1>Cartas de Jogadores RDC 3ª Edição</h1>
       </div>
       <div className={'box-container'}>
-      {generate_teams()}
+      {generate_teams(team_stats)}
       </div>
     </>
   )

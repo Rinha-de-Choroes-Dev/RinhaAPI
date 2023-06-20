@@ -33,12 +33,12 @@ body {
   font-family: 'Oswald';
   font-style: bold;
   font-weight: 1200;
-  font-size: 1.8vw;
+  font-size: 1.5vw;
   color: white;
   color: rgba(255, 255, 255, 0.7);
   top:0;
   /* right:0; */
-  padding-top: 60%;
+  padding-top: 65%;
   width: 100%;
   
 }

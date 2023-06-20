@@ -5,6 +5,10 @@ import json
 import requests
 import numpy as np
 import sqlite3
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "rinha.sqlite")
 
 # match_id = "7091254432"
 
@@ -87,33 +91,13 @@ def parse_match(match_id):
 
     return np.array(stats)
 
-# def save_match(m, overwrite):
-#     filename = "ReplaysDB/" + m.match_id + ".csv"
-#     if not overwrite:
-#         if exists(filename):
-#             print(m.match_id + " - already saved")
-#             return
-    
-#     performances = get_stats(m)
-    
-#     f = open(filename, "w")
-#     header = "Match,Source,Id,LVL,K,D,A,G,XP,LH,DN,Heal,Ward,Sentry,HDamage,TDamage,Hero,Duration\n"
-#     f.write(header)
-#     for p in  performances:
-#         line = m.match_id + "," + m.match_source + ","
-#         for stat in p:
-#             line += stat + ","
-#         line = line[:-1] + "\n"
-#         f.write(line)
-#     f.close()
-#     print(m.match_id + " - saved")
 
 def save_match(match_id, overwrite):
 
     if DEBUGGING:
         print("Starting match:", match_id)
 
-    con = sqlite3.connect("./rinhaapi/rinha.sqlite")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
     count = np.max(cur.execute("SELECT COUNT(1) FROM matches WHERE matchid=" + match_id).fetchall())
     
@@ -167,7 +151,7 @@ def insert_players():
     
     all_teams = [players_mu, players_mnmm, players_tm]
 
-    con = sqlite3.connect("./rinhaapi/rinha.sqlite")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
 
     if DEBUGGING:

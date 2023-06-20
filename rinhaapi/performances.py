@@ -1,5 +1,9 @@
 import sqlite3
 import numpy as np
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "rinha.sqlite")
 
 smatchid = 0
 ssteamid = 1
@@ -41,7 +45,7 @@ class PlayerMetrics:
 
 
 def generate_stats(player):
-    con = sqlite3.connect("./rinhaapi/rinha.sqlite")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
     res = cur.execute("SELECT * FROM matches WHERE steamid=" + player)
     
@@ -52,7 +56,7 @@ def generate_stats(player):
     return player_metrics
 
 def get_max_stats():
-    con = sqlite3.connect("./rinhaapi/rinha.sqlite")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
     res = cur.execute("SELECT steamid FROM players")
     players = res.fetchall()
@@ -87,7 +91,7 @@ pteam = 4
 def get_team_stats(team_id):
     
 
-    con = sqlite3.connect("./rinhaapi/rinha.sqlite")
+    con = sqlite3.connect(db_path)
     cur = con.cursor()
     res = cur.execute("SELECT * FROM players WHERE team == " + team_id)
     team = res.fetchall()
