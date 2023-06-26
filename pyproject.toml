@@ -16,9 +16,6 @@ flask-cors = "^3.0.10"
 
 [tool.poetry.scripts]
 match_parser = "rinhaapi.match_parser:debug"
-insert_matches = "rinhaapi.match_parser:insert_matches"
-performances = "rinhaapi.performances:debug"
-
 
 [build-system]
 requires = ["poetry-core"]

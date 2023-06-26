@@ -1,2 +1,6 @@
 
 rinhaapi/__pycache__/
+
+rinhaapi_old/
+
+rinhaapi/config.py
