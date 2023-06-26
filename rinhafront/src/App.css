@@ -1,11 +1,11 @@
 body {
-  background-color: #18004D;
-  background-image: url('./assets/subtract.svg');
+  background-color: #18004d;
+  background-image: url("./assets/subtract.svg");
 }
 
 .column {
   margin: 50px 10px;
-  
+
   /* width: 100%; */
   /* height: 300px; */
   display: flex;
@@ -15,70 +15,69 @@ body {
   /* padding-bottom: -10px; */
   /* display: flex;  */
   text-align: center;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   /* justify-items: center; */
 }
 
-.player_stat_grid{
+.player_stat_grid {
   position: absolute;
   z-index: 5;
   display: flex;
   color: white;
 }
 
-.player_name{
+.player_name {
   position: absolute;
   z-index: 5;
-  font-family: 'Oswald';
+  font-family: "Oswald";
   font-style: bold;
   font-weight: 1200;
   font-size: 1.5vw;
   color: white;
   color: rgba(255, 255, 255, 0.7);
-  top:0;
+  top: 0;
   /* right:0; */
   padding-top: 65%;
   width: 100%;
-  
 }
 
-.player_stat{
-  font-family: 'Oswald';
+.player_stat {
+  font-family: "Oswald";
   font-style: bold;
   font-weight: 1200;
   font-size: 1.2vw;
   z-index: 5;
   /* color: white; */
   /* color: rgba(255, 255, 255, 0.5); */
-  position:absolute;
-  top:0;
-  right:0;
+  position: absolute;
+  top: 0;
+  right: 0;
   /* width:100%; */
 }
 
-.parent{
+.parent {
   position: relative;
-  transition: transform .2s;
+  transition: transform 0.2s;
   width: 20%;
   padding-bottom: 20vw;
 }
 
-.card_img{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
+.card_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 2;
 }
 
-.player_avg{
-  position:absolute;
-  top:0;
-  right:0;
-  width:100%;
+.player_avg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
   z-index: 2;
-  font-family: 'Oswald';
+  font-family: "Oswald";
   font-style: bold;
   font-weight: 1200;
   font-size: 1.6vw;
@@ -88,30 +87,31 @@ body {
   padding-right: 30%;
 }
 
-.pos_img{
-  position:absolute;
-  top:0;
-  left:0;
-  width:10%;
+.pos_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10%;
   z-index: 5;
   padding-top: 35%;
   padding-left: 15%;
 }
 
-.player_img{
-  position:absolute;
+.player_img {
+  position: absolute;
   z-index: 3;
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
   padding-left: 32%;
   padding-bottom: 90%;
-  width:65%;
+  width: 65%;
 }
-
 
 .parent:hover {
   z-index: 10;
-  transform: scale(2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transform: scale(
+    2
+  ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
 .box-container {
@@ -121,8 +121,8 @@ body {
   /* height: 1000px; */
   display: flex;
   align-items: stretch;
-  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
-  background: #EBFE40;
+  box-shadow: 0 0 3px 5px rgba(0, 0, 0, 0.1);
+  background: #ebfe40;
   display: grid;
   grid-auto-flow: row;
 }
@@ -131,11 +131,10 @@ body {
   text-align: center;
   margin: 25px auto;
   width: 95%;
-  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
-  background: #18004D;
-  align-items: center; 
+  box-shadow: 0 0 3px 5px rgba(0, 0, 0, 0.1);
+  background: #18004d;
+  align-items: center;
   justify-items: center;
-  
 }
 
 .box-container-header {
@@ -146,9 +145,8 @@ body {
   height: fit-content;
   display: flex;
   align-items: stretch;
-  box-shadow: 0 0 3px 5px rgba(0,0,0,0.10);
-  background: #EBFE40;
-  
+  box-shadow: 0 0 3px 5px rgba(0, 0, 0, 0.1);
+  background: #ebfe40;
 }
 
 #root {
@@ -158,7 +156,6 @@ body {
   padding: 1rem;
   text-align: center;
 }
-
 
 @keyframes logo-spin {
   from {
@@ -185,10 +182,10 @@ body {
 
 h1 {
   margin: 0px auto;
-  font-family: 'Oswald';
+  font-family: "Oswald";
   font-style: bold;
   font-weight: 1200;
-  
+
   line-height: 140%;
   color: black;
 
@@ -203,7 +200,7 @@ h1 {
 
 h2 {
   margin: -40px 0px;
-  font-family: 'Oswald';
+  font-family: "Oswald";
   font-style: bold;
   font-weight: 1200;
   font-size: 30.5065px;

@@ -144,10 +144,10 @@ def insert_players():
                 ["76561198056818174",3,"Takaboka Navara", "magnus"]]
 
     players_tm = [["76561198062223936",1,"Fidaler", "void"],
-                ["76561198074453179",1,"Reshi", "puck"],
-                ["76561198050675168",1,"Kin\'Mar", "under"],
-                ["76561198061215930",1,"Matt", "warlock"],
-                ["76561198313077410",1,"Tarantula", "mirana"]]
+                ["76561198074453179",2,"Reshi", "puck"],
+                ["76561198050675168",3,"Kin\'Mar", "under"],
+                ["76561198061215930",5,"Matt", "warlock"],
+                ["76561198313077410",4,"Tarantula", "mirana"]]
     
     all_teams = [players_mu, players_mnmm, players_tm]
 

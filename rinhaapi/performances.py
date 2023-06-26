@@ -29,7 +29,7 @@ class PlayerMetrics:
             self.all = []
             return
         
-        self.supp = np.mean((player[:, swards]/2000 + player[:, ssentries] + player[:, shealing])/player[:, sduration])
+        self.supp = np.mean((player[:, swards] + player[:, ssentries] + player[:, shealing]/2000)/player[:, sduration])
         
         self.kda = np.mean((player[:, skills]+player[:, sassists])/(player[:, sdeaths] + 1))
         
