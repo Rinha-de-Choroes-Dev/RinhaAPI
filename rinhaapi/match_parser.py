@@ -74,7 +74,7 @@ def update_league_matches(league_id, use_json=True):
                     kills
                     deaths
                     assists
-                    gold
+                    goldPerMinute
                     experiencePerMinute
                     numLastHits
                     numDenies
@@ -90,6 +90,11 @@ def update_league_matches(league_id, use_json=True):
                         wards{{
                             type
                         }}
+                        heroDamageReport{{
+                            dealtTotal{{
+                                stunDuration
+                                }}
+                            }}
                     }}
                 }}
                 bottomLaneOutcome
@@ -124,8 +129,8 @@ def update_league_matches(league_id, use_json=True):
                     player["kills"], 
                     player["deaths"], 
                     player["assists"], 
-                    player["gold"], 
-                    int(player["experiencePerMinute"]*match["durationSeconds"]/60), 
+                    player["goldPerMinute"], 
+                    player["experiencePerMinute"], 
                     player["numLastHits"], 
                     player["numDenies"], 
                     player["heroHealing"], 
@@ -135,6 +140,7 @@ def update_league_matches(league_id, use_json=True):
                     player["towerDamage"], 
                     player["heroId"], 
                     match["durationSeconds"],
+                    0,
                     0,
                     0,
                     0,  
@@ -147,8 +153,8 @@ def update_league_matches(league_id, use_json=True):
                     player["kills"], 
                     player["deaths"], 
                     player["assists"], 
-                    player["gold"], 
-                    int(player["experiencePerMinute"]*match["durationSeconds"]/60), 
+                    player["goldPerMinute"], 
+                    player["experiencePerMinute"], 
                     player["numLastHits"], 
                     player["numDenies"], 
                     player["heroHealing"], 
@@ -161,6 +167,7 @@ def update_league_matches(league_id, use_json=True):
                     player["imp"],
                     player["stats"]["campStack"][-1],
                     get_won_lane(player, match, player_number),
+                    player["stats"]["heroDamageReport"]["dealtTotal"]["stunDuration"],
                     ]
 
             for stat in stats:
