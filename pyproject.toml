@@ -14,9 +14,12 @@ selenium = "^4.10.0"
 webdriver-manager = "^3.8.6"
 flask-cors = "^3.0.10"
 pandas = "^2.0.3"
+psycopg2-binary = "^2.9.6"
+pytest = "^7.4.0"
 
 [tool.poetry.scripts]
 match_parser = "rinhaapi.match_parser:debug"
+
 
 [build-system]
 requires = ["poetry-core"]
