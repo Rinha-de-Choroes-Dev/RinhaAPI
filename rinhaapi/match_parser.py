@@ -5,10 +5,6 @@ from .config import *
 import psycopg2
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "rinha.sqlite")
-json_path = os.path.join(BASE_DIR, "stratz.json")
-
-print(db_path)
 
 def get_wards(player=None, ward_or_sentry=0):
     if player is None:

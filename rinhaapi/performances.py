@@ -6,7 +6,6 @@ from enum import Enum
 import pandas as pd
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "rinha.sqlite")
 
 db_headers_player = np.array([ 
                 ['matchid', int],
