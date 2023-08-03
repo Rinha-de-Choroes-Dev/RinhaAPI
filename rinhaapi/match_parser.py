@@ -1,16 +1,15 @@
 import requests
 import json
 import os
-import sqlite3
 from .config import *
+import psycopg2
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "rinha.sqlite")
-json_path = os.path.join(BASE_DIR, "stratz.json")
 
-print(db_path)
+def get_wards(player=None, ward_or_sentry=0):
+    if player is None:
+        return -1
 
-def get_wards(player, ward_or_sentry):
     wards = 0
     for ward in player["stats"]["wards"]:
         if ward["type"] == ward_or_sentry:
@@ -48,15 +47,48 @@ def get_won_lane(player, match, player_number):
 
     return victory
 
+
+table_columns = ["matchid",
+                "steamid",
+                "level",
+                "kills",
+                "deaths",
+                "assists",
+                "gpm",
+                "xpm",
+                "lh",
+                "dn",
+                "healing",
+                "wards",
+                "sentries",
+                "damage_hero",
+                "damage_tower",
+                "hero_id",
+                "duration",
+                "imp",
+                "stacks",
+                "won_lane",
+                "stun",
+                "lane",
+                "award"]
+
 def update_league_matches(league_id, use_json=True):
 
     content = ""
 
-    con = sqlite3.connect(db_path)
-    cur = con.cursor()
-    res = cur.execute("SELECT COUNT(matchid) FROM matches")
+    conn = psycopg2.connect(database=db_name,
+                    host=db_host,
+                    user=db_user,
+                    password=db_pass,
+                    port=db_port)
     
-    skips = int(res.fetchall()[0][0]/10)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(matchid) FROM matches")
+
+    skips = int(cursor.fetchall()[0][0]/10)
+
+    print("Skips:", skips)
 
     if (use_json):
         content = json.load(open(json_path))
@@ -110,15 +142,20 @@ def update_league_matches(league_id, use_json=True):
         response = requests.post(url=url, json={"query": body}, headers=headers)
         content = json.loads(response.content)
 
-    con = sqlite3.connect(db_path)
-    cur = con.cursor()
 
     for match in content["data"]["league"]["matches"]:
         player_number = 0
         print(match["id"])
         for player in match["players"]:
             player_number += 1
-            querry = "INSERT INTO matches VALUES ("
+            querry = "INSERT INTO matches ("
+
+            for column in table_columns:
+                querry += column + ","
+
+            querry += ") VALUES ("
+
+            querry = querry.replace(",)", ")")
             
             stats = []
             if (match["bottomLaneOutcome"] is None):
@@ -174,16 +211,18 @@ def update_league_matches(league_id, use_json=True):
                 querry += str(stat) + ", "
 
             if (player["lane"] is None):
-                querry += "\"NULL\", "
-                querry += "\"NULL\""
+                querry += "\'NULL\', "
+                querry += "\'NULL\'"
             else:
-                querry += "\"" + player["lane"] + "\", "
-                querry += "\"" + player["award"] + "\""
+                querry += "\'" + player["lane"] + "\', "
+                querry += "\'" + player["award"] + "\'"
             querry += ")"
-            cur.execute(querry)
-
-    con.commit()
-
+            # print(querry)
+            cursor.execute(querry)
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 def debug():
