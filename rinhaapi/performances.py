@@ -40,7 +40,24 @@ db_headers_team = np.array([
                 ['img', str],
                 ['team', int]])
 
-class PlayerMetrics:
+
+class PlayerMetrics():
+
+    stat_list = np.array([
+        ['kills', 0.3],
+        ['deaths', -0.3], 
+        ['assists', 0.15],
+        ['lh', 0.003],
+        ['gpm', 0.004],
+        ['xpm', 0.004],
+        ['stun', 0.0004],
+        ['healing', 0.0003],
+        ['damage_tower', 0.0003],
+        ['stacks', 0.5],
+        ['wards', 0.3],
+        ['sentries', 0.3]
+        ])
+
     def compute_lane_stat(performances):
 
         lanes = performances.won_lane.astype('int32')
@@ -49,20 +66,7 @@ class PlayerMetrics:
     
     def compute_fantasy_points(performances):
 
-        stat_list = np.array([
-                     ['kills', 0.3],
-                     ['deaths', -0.3], 
-                     ['assists', 0.15],
-                     ['lh', 0.003],
-                     ['gpm', 0.004],
-                     ['xpm', 0.004],
-                     ['stun', 0.0004],
-                     ['healing', 0.0003],
-                     ['damage_tower', 0.0003],
-                     ['stacks', 0.5],
-                     ['wards', 0.3],
-                     ['sentries', 0.3]
-                     ])
+        
         
         weighted = performances.copy()[stat_list[:, 0]]
         for stat, weight in stat_list:
@@ -73,7 +77,7 @@ class PlayerMetrics:
         return weighted
         
 
-def get_player_performances(player):
+def get_player_performances(player, table_name):
     conn = psycopg2.connect(database=db_name,
                     host=db_host,
                     user=db_user,
@@ -82,7 +86,7 @@ def get_player_performances(player):
     
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM matches WHERE steamid=\'" + player + "\'")
+    cursor.execute("SELECT * FROM " + table_name + " WHERE steamid=\'" + player + "\'")
     
     all_performances = np.array(cursor.fetchall())
 
@@ -95,7 +99,7 @@ def get_player_performances(player):
 
     return df
 
-def get_team_performances(team):
+def get_team_performances(team, table_name):
     conn = psycopg2.connect(database=db_name,
                     host=db_host,
                     user=db_user,
@@ -109,7 +113,7 @@ def get_team_performances(team):
     players = np.array(cursor.fetchall())
     df_players = pd.DataFrame(players, columns = db_headers_team[:, 0])
 
-    query = "SELECT * FROM matches"
+    query = "SELECT * FROM " + table_name
     first = True
 
     for player_id in df_players.steamid:
@@ -143,7 +147,7 @@ def debug():
     #     print(PlayerMetrics.compute_lane_stat(perf))
     #     print(PlayerMetrics.compute_fantasy_points(perf))
 
-    all_performances = get_team_performances(0)
+    all_performances = get_team_performances(0, "matches_rinha3")
 
     for perf in all_performances:
         print(PlayerMetrics.compute_lane_stat(perf))

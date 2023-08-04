@@ -6,9 +6,7 @@ import psycopg2
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def get_wards(player=None, ward_or_sentry=0):
-    if player is None:
-        return -1
+def get_wards(player, ward_or_sentry=0):
 
     wards = 0
     for ward in player["stats"]["wards"]:
@@ -72,7 +70,7 @@ table_columns = ["matchid",
                 "lane",
                 "award"]
 
-def update_league_matches(league_id, use_json=True):
+def update_league_matches(league_id, table_name):
 
     content = ""
 
@@ -84,63 +82,58 @@ def update_league_matches(league_id, use_json=True):
     
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(matchid) FROM matches")
+    cursor.execute("SELECT COUNT(matchid) FROM " + table_name)
 
     skips = int(cursor.fetchall()[0][0]/10)
 
-    print("Skips:", skips)
-
-    if (use_json):
-        content = json.load(open(json_path))
-    else:
-        body = f"""
-        {{
-        league(id: {league_id}){{
-            lastMatchDate,
-            matches(request: {{isParsed: true, take:100, skip:{skips}}}){{
-                id
-                durationSeconds
-                players {{
-                    steamAccountId
-                    level
-                    kills
-                    deaths
-                    assists
-                    goldPerMinute
-                    experiencePerMinute
-                    numLastHits
-                    numDenies
-                    heroHealing
-                    heroDamage
-                    towerDamage
-                    heroId
-                    imp
-                    award
-                    lane
-                    stats {{
-                    campStack
-                        wards{{
-                            type
-                        }}
-                        heroDamageReport{{
-                            dealtTotal{{
-                                stunDuration
-                                }}
-                            }}
+    body = f"""
+    {{
+    league(id: {league_id}){{
+        lastMatchDate,
+        matches(request: {{isParsed: true, take:100, skip:{skips}}}){{
+            id
+            durationSeconds
+            players {{
+                steamAccountId
+                level
+                kills
+                deaths
+                assists
+                goldPerMinute
+                experiencePerMinute
+                numLastHits
+                numDenies
+                heroHealing
+                heroDamage
+                towerDamage
+                heroId
+                imp
+                award
+                lane
+                stats {{
+                campStack
+                    wards{{
+                        type
                     }}
+                    heroDamageReport{{
+                        dealtTotal{{
+                            stunDuration
+                            }}
+                        }}
                 }}
-                bottomLaneOutcome
-                topLaneOutcome
-                midLaneOutcome      
             }}
+            bottomLaneOutcome
+            topLaneOutcome
+            midLaneOutcome      
         }}
-        }}
-        """
+    }}
+    }}
+    """
 
-        url = "https://api.stratz.com/graphql"
-        headers = {"Authorization": f"Bearer {stratz_token}", 'content-type': 'application/json'}
-        response = requests.post(url=url, json={"query": body}, headers=headers)
-        content = json.loads(response.content)
+    url = "https://api.stratz.com/graphql"
+    headers = {"Authorization": f"Bearer {stratz_token}", 'content-type': 'application/json'}
+    response = requests.post(url=url, json={"query": body}, headers=headers)
+    content = json.loads(response.content)
 
 
     for match in content["data"]["league"]["matches"]:
@@ -148,7 +141,7 @@ def update_league_matches(league_id, use_json=True):
         print(match["id"])
         for player in match["players"]:
             player_number += 1
-            querry = "INSERT INTO matches ("
+            querry = "INSERT INTO " + table_name + " ("
 
             for column in table_columns:
                 querry += column + ","
