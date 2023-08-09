@@ -257,14 +257,27 @@ def get_all_performances(team_table_idx, player_table_idx):
 
 def get_all_cards(team_table_idx, player_table_idx):
     df_players, all_performances = get_all_performances(team_table_idx, player_table_idx)
+    stats_list = []
     for i in range(len(all_performances)):
         perf = all_performances[i]
         stats = PlayerMetrics.compute_card_stats_avg(perf)
-        print(pd.DataFrame.from_dict(stats))
+        stats_list.append(stats)
+    
+    df_stats = pd.DataFrame(stats_list)
+    
+    return df_players, df_stats
+
+def get_all_cards_normalized(team_table_idx, player_table_idx):
+    df_players, df_stats = get_all_cards(team_table_idx, player_table_idx)
+    df_normalized = df_stats/df_stats.max()*100 # min max normalization
+
+    return df_players, df_normalized.round(1)
 
 
 def debug():
 
-    all_cards = get_all_cards(Tables.PLAYERS_RINHA3, Tables.MATCHES_RINHA3)
+    df_players, df_normalized = get_all_cards_normalized(Tables.PLAYERS_RINHA3, Tables.MATCHES_RINHA3)
+
+    print(df_normalized)
 
     return
