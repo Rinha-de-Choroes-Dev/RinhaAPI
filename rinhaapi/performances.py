@@ -29,22 +29,23 @@ db_headers_player = np.array([
                 ['stacks', int],
                 ['won_lane', int],
                 ['stun', int],
+                ['team_id', int],
+                ['name', str],
                 ['lane', str],
                 ['award', str]
                 ])
 
-db_headers_team = np.array([ 
-                ['steamid', int],
-                ['pos', int],
-                ['name', str],
-                ['img', str],
-                ['team', int]])
 
-def validate_pint(n, max = 1000):
+def validate_pint(n, max = -1):
     if not isinstance(n, int):
         return -1
-    if n < 0 or n > max:
+    
+    if n < 0:
         return -1
+    
+    if max > 0 and n > max:
+        return -1
+
     return n
 
 class Tables(IntEnum):
@@ -144,7 +145,7 @@ class PlayerMetrics():
 
 def get_player_performances(player, table_idx):
 
-    player = validate_pint(player, 8)
+    player = validate_pint(player)
     if player == -1:
         return
     
@@ -173,14 +174,11 @@ def get_player_performances(player, table_idx):
 
     return df
 
-def get_team_performances(team, team_table_idx, player_table_idx):
+def get_team_performances(team, player_table_idx):
     team = validate_pint(team)
     if team == -1:
         return
     
-    team_table = validate_table(team_table_idx)
-    if team_table == -1:
-        return
     
     player_table = validate_table(player_table_idx)
     if player_table == -1:
@@ -194,36 +192,22 @@ def get_team_performances(team, team_table_idx, player_table_idx):
     
     cursor = conn.cursor()
 
-    query = "SELECT * FROM " + team_table + " WHERE team=" + str(team)
-    cursor.execute(query)
-
-    players = np.array(cursor.fetchall())
-    df_players = pd.DataFrame(players, columns = db_headers_team[:, 0])
-
-    query = "SELECT * FROM " + player_table
+    query = "SELECT * FROM " + player_table + " WHERE team_id=" + str(team)
     first = True
-
-    for player_id in df_players.steamid:
-        if first:
-            query += " WHERE steamid = \'" + player_id + "\'"
-            first = False
-        else:
-            query += " OR steamid = \'" + player_id + "\'"
   
     cursor.execute(query)
     stats = np.array(cursor.fetchall())
     df_stats = pd.DataFrame(stats, columns = db_headers_player[:, 0])
 
+    player_ids = pd.unique(df_stats['steamid'])
+
     all_performances = []
-    for player_id in df_players.steamid:
+    for player_id in player_ids:
         all_performances.append(df_stats.loc[df_stats['steamid'] == player_id])
 
-    return df_players, all_performances
+    return all_performances
 
-def get_all_performances(team_table_idx, player_table_idx):
-    team_table = validate_table(team_table_idx)
-    if team_table == -1:
-        return
+def get_all_performances(player_table_idx):
     
     player_table = validate_table(player_table_idx)
     if player_table == -1:
@@ -236,48 +220,49 @@ def get_all_performances(team_table_idx, player_table_idx):
                     port=db_port)
     
     cursor = conn.cursor()
-
-    query = "SELECT * FROM " + team_table
-    cursor.execute(query)
-
-    players = np.array(cursor.fetchall())
-    df_players = pd.DataFrame(players, columns = db_headers_team[:, 0])
-
     query = "SELECT * FROM " + player_table
 
     cursor.execute(query)
     stats = np.array(cursor.fetchall())
     df_stats = pd.DataFrame(stats, columns = db_headers_player[:, 0])
+    
+    player_ids = pd.unique(df_stats['steamid'])
 
     all_performances = []
-    for player_id in df_players.steamid:
+    for player_id in player_ids:
         all_performances.append(df_stats.loc[df_stats['steamid'] == player_id])
 
-    return df_players, all_performances
+    return all_performances
 
-def get_all_cards(team_table_idx, player_table_idx):
-    df_players, all_performances = get_all_performances(team_table_idx, player_table_idx)
+def get_all_cards(player_table_idx):
+    all_performances = get_all_performances(player_table_idx)
     stats_list = []
     for i in range(len(all_performances)):
         perf = all_performances[i]
         stats = PlayerMetrics.compute_card_stats_avg(perf)
+        stats["name"] = all_performances[i].name.iloc[0]
+        stats["team_id"] = all_performances[i].team_id.iloc[0]
         stats_list.append(stats)
     
     df_stats = pd.DataFrame(stats_list)
     
-    return df_players, df_stats
+    return df_stats
 
-def get_all_cards_normalized(team_table_idx, player_table_idx):
-    df_players, df_stats = get_all_cards(team_table_idx, player_table_idx)
-    df_normalized = df_stats/df_stats.max()*100 # min max normalization
+def get_all_cards_normalized(player_table_idx):
+    df_stats = get_all_cards(player_table_idx)
+    s = df_stats.select_dtypes("number").columns
+    df_stats[s] = df_stats[s]/df_stats[s].max()*100 
+    df_stats[s] = df_stats[s].round(1)
 
-    return df_players, df_normalized.round(1)
+    return df_stats
 
 
 def debug():
 
-    df_players, df_normalized = get_all_cards_normalized(Tables.PLAYERS_RINHA3, Tables.MATCHES_RINHA3)
+    # df_players, df_normalized = get_all_cards_normalized(Tables.PLAYERS_RINHA3, Tables.MATCHES_RINHA3)
 
-    print(df_normalized)
+    # print(df_normalized)
+
+    print(get_all_cards(Tables.MATCHES_RINHA3))
 
     return
