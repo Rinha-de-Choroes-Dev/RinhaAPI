@@ -3,6 +3,7 @@ import json
 import os
 from .config import *
 import psycopg2
+from .performances import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,9 +43,17 @@ def get_won_lane(player, match, player_number):
         return result
     else:
         return -1*result
+    
+def get_team_id(match, player_number):
+    team = 0 if player_number <= 5 else 1
+    if team == 0:
+        return match["radiantTeamId"]
+    
+    return match["direTeamId"]
 
-    return victory
-
+def generate_name(bulshit_name):
+    normal_string="".join(ch for ch in bulshit_name if ch.isalnum())
+    return "\'" + normal_string+ "\'"
 
 table_columns = ["matchid",
                 "steamid",
@@ -67,10 +76,16 @@ table_columns = ["matchid",
                 "stacks",
                 "won_lane",
                 "stun",
+                "team_id",
+                "name",
                 "lane",
-                "award"]
+                "award"
+                ]
 
-def update_league_matches(league_id, table_name):
+def update_league_matches(league_id, table_idx):
+    table_name = validate_table(table_idx)
+    if table_name == -1:
+        return
 
     content = ""
 
@@ -121,10 +136,15 @@ def update_league_matches(league_id, table_name):
                             }}
                         }}
                 }}
+                steamAccount{{
+                    name
+                }}
             }}
             bottomLaneOutcome
             topLaneOutcome
-            midLaneOutcome      
+            midLaneOutcome
+            radiantTeamId
+            direTeamId      
         }}
     }}
     }}
@@ -173,7 +193,9 @@ def update_league_matches(league_id, table_name):
                     0,
                     0,
                     0,
-                    0,  
+                    0, 
+                    get_team_id(match, player_number),
+                    generate_name(player["steamAccount"]["name"])
                 ]
             else:
                 stats = [
@@ -198,6 +220,8 @@ def update_league_matches(league_id, table_name):
                     player["stats"]["campStack"][-1],
                     get_won_lane(player, match, player_number),
                     player["stats"]["heroDamageReport"]["dealtTotal"]["stunDuration"],
+                    get_team_id(match, player_number),
+                    generate_name(player["steamAccount"]["name"])
                     ]
 
             for stat in stats:
@@ -211,6 +235,7 @@ def update_league_matches(league_id, table_name):
                 querry += "\'" + player["award"] + "\'"
             querry += ")"
             # print(querry)
+            # return
             cursor.execute(querry)
     
     conn.commit()
@@ -219,4 +244,4 @@ def update_league_matches(league_id, table_name):
 
 
 def debug():
-    update_league_matches(15070, False)
+    update_league_matches(15070, Tables.MATCHES_RINHA3)
