@@ -32,7 +32,9 @@ db_headers_player = np.array([
                 ['team_id', int],
                 ['name', str],
                 ['lane', str],
-                ['award', str]
+                ['award', str],
+                ['position', str],
+                ['team_name', str],
                 ])
 
 
@@ -50,12 +52,12 @@ def validate_pint(n, max = -1):
 
 class Tables(IntEnum):
     MATCHES_RINHA3 = 0
-    PLAYERS_RINHA3 = 1
-    MOCK_PLAYERS = 2
+    MATCHES_RINHA4_DIV1 = 1
+    MATCHES_RINHA4_DIV2 = 2
 
 table_strings = ['matches_rinha3',
-               'players_rinha3',
-               'mock_players']
+               'matches_rinha4_div1',
+               'matches_rinha4_div2']
 
 def validate_table(table_idx):
     if not isinstance(table_idx, Tables):
@@ -234,14 +236,20 @@ def get_all_performances(player_table_idx):
 
     return all_performances
 
+def generate_position(position):
+    return int(position[-1])
+     
+
 def get_all_cards(player_table_idx):
     all_performances = get_all_performances(player_table_idx)
     stats_list = []
     for i in range(len(all_performances)):
         perf = all_performances[i]
         stats = PlayerMetrics.compute_card_stats_avg(perf)
-        stats["name"] = all_performances[i].name.iloc[0]
-        stats["team_id"] = all_performances[i].team_id.iloc[0]
+        stats["name"] = all_performances[i].name.iloc[-1]
+        stats["pos"] = generate_position(all_performances[i].position.iloc[-1])
+        stats["team_id"] = all_performances[i].team_id.iloc[-1]
+        stats["team_name"] = all_performances[i].team_name.iloc[-1]
         stats_list.append(stats)
     
     df_stats = pd.DataFrame(stats_list)
@@ -250,9 +258,8 @@ def get_all_cards(player_table_idx):
 
 def get_all_cards_normalized(player_table_idx):
     df_stats = get_all_cards(player_table_idx)
-    s = df_stats.select_dtypes("number").columns
-    df_stats[s] = df_stats[s]/df_stats[s].max()*100 
-    df_stats[s] = df_stats[s].round(1)
+    df_stats.iloc[:, :8] = (df_stats.iloc[:, :8] - df_stats.iloc[:, :8].min())/(df_stats.iloc[:, :8].max() - df_stats.iloc[:, :8].min())*100 # min max normalization
+    df_stats.iloc[:, :8] = df_stats.iloc[:, :8].fillna(100).round(1)
 
     return df_stats
 
@@ -263,6 +270,13 @@ def debug():
 
     # print(df_normalized)
 
-    print(get_all_cards(Tables.MATCHES_RINHA3))
+    print("\nRDC 3 ED")
+    print(get_all_cards_normalized(Tables.MATCHES_RINHA3))
+
+    print("\nRDC 4 ED - Div 1")
+    print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV1))
+
+    print("\nRDC 4 ED - Div 1")
+    print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV2))
 
     return
