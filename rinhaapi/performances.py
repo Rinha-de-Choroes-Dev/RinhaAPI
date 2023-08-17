@@ -41,13 +41,10 @@ db_headers_player = np.array([
 def validate_pint(n, max = -1):
     if not isinstance(n, int):
         return -1
-    
     if n < 0:
         return -1
-    
     if max > 0 and n > max:
         return -1
-
     return n
 
 class Tables(IntEnum):
@@ -209,8 +206,7 @@ def get_team_performances(team, player_table_idx):
 
     return all_performances
 
-def get_all_performances(player_table_idx):
-    
+def get_all_performances(player_table_idx):    
     player_table = validate_table(player_table_idx)
     if player_table == -1:
         return
@@ -242,6 +238,10 @@ def generate_position(position):
 
 def get_all_cards(player_table_idx):
     all_performances = get_all_performances(player_table_idx)
+
+    if all_performances is None:
+        return
+
     stats_list = []
     for i in range(len(all_performances)):
         perf = all_performances[i]
@@ -258,7 +258,12 @@ def get_all_cards(player_table_idx):
 
 def get_all_cards_normalized(player_table_idx):
     df_stats = get_all_cards(player_table_idx)
-    df_stats.iloc[:, :8] = (df_stats.iloc[:, :8] - df_stats.iloc[:, :8].min())/(df_stats.iloc[:, :8].max() - df_stats.iloc[:, :8].min())*100 # min max normalization
+    if df_stats is None:
+        return
+
+    # df_stats.iloc[:, :8] = (df_stats.iloc[:, :8] - df_stats.iloc[:, :8].min())/(df_stats.iloc[:, :8].max() - df_stats.iloc[:, :8].min())*100 # min max normalization
+    df_stats.iloc[:, 3:8] = (df_stats.iloc[:, 3:8])/(df_stats.iloc[:, 3:8].max())*100
+    df_stats.iloc[:, 2] = (df_stats.iloc[:, 2] + 2)*25
     df_stats.iloc[:, :8] = df_stats.iloc[:, :8].fillna(100).round(1)
 
     return df_stats
@@ -273,10 +278,10 @@ def debug():
     print("\nRDC 3 ED")
     print(get_all_cards_normalized(Tables.MATCHES_RINHA3))
 
-    print("\nRDC 4 ED - Div 1")
-    print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV1))
+    # print("\nRDC 4 ED - Div 1")
+    # print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV1))
 
-    print("\nRDC 4 ED - Div 1")
-    print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV2))
+    # print("\nRDC 4 ED - Div 1")
+    # print(get_all_cards_normalized(Tables.MATCHES_RINHA4_DIV2))
 
     return
