@@ -274,3 +274,13 @@ def debug():
 
     print("Rinha 4 - Div 2")
     update_league_matches(15598, Tables.MATCHES_RINHA4_DIV2)
+
+def update():
+    print("Rinha 3")
+    update_league_matches(15070, Tables.MATCHES_RINHA3)
+
+    print("Rinha 4 - Div 1")
+    update_league_matches(15594, Tables.MATCHES_RINHA4_DIV1)
+
+    print("Rinha 4 - Div 2")
+    update_league_matches(15598, Tables.MATCHES_RINHA4_DIV2)

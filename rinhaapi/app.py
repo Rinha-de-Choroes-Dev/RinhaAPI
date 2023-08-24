@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from .performances import *
 from flask_cors import CORS
 from datetime import datetime, timedelta
+import pytz
 
 app = Flask(__name__)
 CORS(app)
@@ -29,10 +30,18 @@ def route_get_player_stats():
     
 
     update = False
+
+    timezone = pytz.timezone('America/Sao_Paulo')
+    now = timezone.localize(datetime.now())
+
     if last_update[league] == -1:
         update = True
+        
+    elif now.day > last_update[league].day:
+        update = True
+
     else:
-        deltatime = datetime.now() - last_update[league]
+        deltatime = now - last_update[league]
         print(deltatime)
         if deltatime > timedelta(hours=6):
             update = True
@@ -42,7 +51,7 @@ def route_get_player_stats():
         stats = get_all_cards_normalized(league)
         if stats is not None:
             league_dbs[league] = stats
-            last_update[league] = datetime.now()
+            last_update[league] = timezone.localize(datetime.now())
     else:
         print("Old")
         stats = league_dbs[league]

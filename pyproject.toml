@@ -18,7 +18,7 @@ psycopg2-binary = "^2.9.6"
 pytest = "^7.4.0"
 
 [tool.poetry.scripts]
-match_parser = "rinhaapi.match_parser:debug"
+match_parser = "rinhaapi.match_parser:update"
 
 
 [build-system]
