@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from .performances import *
+from performances import *
 from flask_cors import CORS
 from datetime import datetime, timedelta
 import pytz

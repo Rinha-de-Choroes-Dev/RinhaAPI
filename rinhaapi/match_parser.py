@@ -1,9 +1,9 @@
 import requests
 import json
 import os
-from .config import *
+from config import *
 import psycopg2
-from .performances import *
+from performances import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
