@@ -1,5 +1,5 @@
 import psycopg2
-from config import *
+from rinhaapi.config import *
 import numpy as np
 import os.path
 from enum import IntEnum
